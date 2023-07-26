@@ -4,15 +4,17 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Login from "./components/Login";
 import Add from "./components/Add";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [newAuthor, setNewAuthor] = useState("")
+  const [newAuthor, setNewAuthor] = useState("");
   const [newURL, setNewURL] = useState("");
   const [newTitle, setNewTitle] = useState("");
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -30,38 +32,48 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
 
-    const user = await loginService.login({
-      username,
-      password,
-    });
+    try {
+      const user = await loginService.login({
+        username,
+        password,
+      });
 
-    window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
+      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
 
-    blogService.setToken(user.token);
-    setUser(user);
-    setUsername("");
-    setPassword("");
+      blogService.setToken(user.token);
+      setUser(user);
+      setUsername("");
+      setPassword("");
+    } catch (exception) {
+      setMessage("Wrong username or password");
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+    }
   };
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
     setUser(null);
-  }
+  };
 
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault();
     const blogObject = {
       title: newTitle,
       author: newAuthor,
-      url: newURL
+      url: newURL,
     };
 
-    blogService.create(blogObject).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog));
-      setNewTitle("");
-      setNewURL("");
-      setNewAuthor("");
-    });
+    const returnedBlog = await blogService.create(blogObject);
+    setBlogs(blogs.concat(returnedBlog));
+    setMessage(`A new blog "${newTitle}" by ${newAuthor} has been added`);
+    setTimeout(() => {
+      setMessage(null);
+    }, 5000);
+    setNewTitle("");
+    setNewURL("");
+    setNewAuthor("");
   };
 
   const handleAuthorChange = (event) => {
@@ -78,12 +90,22 @@ const App = () => {
 
   if (user === null) {
     return (
-      <Login username={username} handleLogin={handleLogin} password={password} setPassword={setPassword} setUsername={setUsername} />
-    )
+      <>
+        <Notification message={message} />
+        <Login
+          username={username}
+          handleLogin={handleLogin}
+          password={password}
+          setPassword={setPassword}
+          setUsername={setUsername}
+        />
+      </>
+    );
   } else {
     return (
       <div>
         <h2>Blogs</h2>
+        <Notification message={message} />
         <p>{user.name} is logged in.</p>
         <button onClick={handleLogout}>Logout</button>
         <Add
