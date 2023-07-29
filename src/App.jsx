@@ -12,9 +12,6 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [newAuthor, setNewAuthor] = useState("");
-  const [newURL, setNewURL] = useState("");
-  const [newTitle, setNewTitle] = useState("");
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
@@ -60,36 +57,15 @@ const App = () => {
 
   const blogFormRef = useRef();
 
-  const addBlog = async (event) => {
-    event.preventDefault();
+  const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility();
-    const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newURL,
-    };
 
     const returnedBlog = await blogService.create(blogObject);
     setBlogs(blogs.concat(returnedBlog));
-    setMessage(`A new blog "${newTitle}" by ${newAuthor} has been added`);
+    setMessage(`A new blog "${blogObject.title}" by ${blogObject.author} has been added`);
     setTimeout(() => {
       setMessage(null);
     }, 5000);
-    setNewTitle("");
-    setNewURL("");
-    setNewAuthor("");
-  };
-
-  const handleAuthorChange = (event) => {
-    setNewAuthor(event.target.value);
-  };
-
-  const handleTitleChange = (event) => {
-    setNewTitle(event.target.value);
-  };
-
-  const handleURLChange = (event) => {
-    setNewURL(event.target.value);
   };
 
   if (user === null) {
@@ -114,13 +90,7 @@ const App = () => {
         <button onClick={handleLogout}>Logout</button>
         <Togglable buttonLabel="new blog" ref={blogFormRef}>
           <Add
-            handleAuthorChange={handleAuthorChange}
-            handleTitleChange={handleTitleChange}
-            handleURLChange={handleURLChange}
             addBlog={addBlog}
-            newAuthor={newAuthor}
-            newTitle={newTitle}
-            newURL={newURL}
           />
         </Togglable>
         {blogs.map((blog) => (
