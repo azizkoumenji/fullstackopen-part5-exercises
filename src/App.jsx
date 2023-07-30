@@ -59,8 +59,8 @@ const App = () => {
 
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility();
-    const returnedBlog = await blogService.create(blogObject);
-    setBlogs(blogs.concat(returnedBlog));
+    await blogService.create(blogObject);
+    setBlogs(await blogService.getAll());
     setMessage(`A new blog "${blogObject.title}" by ${blogObject.author} has been added`);
     setTimeout(() => {
       setMessage(null);
