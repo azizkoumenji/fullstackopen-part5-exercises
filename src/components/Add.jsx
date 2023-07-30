@@ -47,7 +47,7 @@ const Add = ({ addBlog }) => {
           URL:
           <input value={newURL} onChange={handleURLChange} />
         </div>
-        <button type="submit">save</button>
+        <button type="submit">Save</button>
       </form>
     </>
   );

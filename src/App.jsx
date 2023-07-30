@@ -59,7 +59,6 @@ const App = () => {
 
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility();
-
     const returnedBlog = await blogService.create(blogObject);
     setBlogs(blogs.concat(returnedBlog));
     setMessage(`A new blog "${blogObject.title}" by ${blogObject.author} has been added`);
@@ -87,8 +86,8 @@ const App = () => {
         <h2>Blogs</h2>
         <Notification message={message} />
         <p>{user.name} is logged in.</p>
-        <button onClick={handleLogout}>Logout</button>
-        <Togglable buttonLabel="new blog" ref={blogFormRef}>
+        <button onClick={handleLogout}>Log Out</button>
+        <Togglable buttonLabel="New Blog" ref={blogFormRef}>
           <Add
             addBlog={addBlog}
           />
