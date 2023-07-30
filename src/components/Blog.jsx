@@ -17,14 +17,19 @@ const Blog = ({ blog }) => {
     marginBottom: 5,
   };
 
-
   if (showAll) {
     return (
       <div style={blogStyle}>
-        <p>{blog.title}</p>
-        <p>{blog.url}</p>
-        <p>Likes: {blog.likes} <button>Like</button></p>
-        <p>{blog.author}</p>
+        <p>
+          {blog.title} {blog.author}
+        </p>
+        <a href={blog.url} target="_blank" rel="noreferrer">
+          {blog.url}
+        </a>
+        <p>
+          Likes: {blog.likes} <button>Like</button>
+        </p>
+        <p>{blog.user.name}</p>
         <button onClick={handleClick}>Hide</button>
       </div>
     );
