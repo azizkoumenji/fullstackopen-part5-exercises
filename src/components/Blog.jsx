@@ -1,12 +1,20 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
+import blogService from "../services/blogs";
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, setBlogs }) => {
   const [showAll, setShow] = useState(false);
 
   const handleClick = () => {
     const change = !showAll;
     setShow(change);
+  };
+
+  const handleLike = async () => {
+    const newBlog = { ...blog, likes: blog.likes + 1 };
+    console.log(newBlog);
+    await blogService.modify(newBlog);
+    setBlogs(await blogService.getAll());
   };
 
   const blogStyle = {
@@ -27,7 +35,7 @@ const Blog = ({ blog }) => {
           {blog.url}
         </a>
         <p>
-          Likes: {blog.likes} <button>Like</button>
+          Likes: {blog.likes} <button onClick={handleLike}>Like</button>
         </p>
         <p>{blog.user.name}</p>
         <button onClick={handleClick}>Hide</button>
@@ -45,6 +53,7 @@ const Blog = ({ blog }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
+  setBlogs: PropTypes.func.isRequired,
 };
 
 export default Blog;
