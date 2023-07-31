@@ -67,6 +67,10 @@ const App = () => {
     }, 5000);
   };
 
+  function compareNumbers(a, b) {
+    return b.likes - a.likes;
+  }
+
   if (user === null) {
     return (
       <>
@@ -92,7 +96,8 @@ const App = () => {
             addBlog={addBlog}
           />
         </Togglable>
-        {blogs.map((blog) => (
+        {
+          blogs.sort(compareNumbers).map((blog) => (
           <Blog key={blog.id} blog={blog} setBlogs={setBlogs}/>
         ))}
       </div>
