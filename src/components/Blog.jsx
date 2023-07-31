@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import blogService from "../services/blogs";
 
-const Blog = ({ blog, setBlogs }) => {
+const Blog = ({ blog, setBlogs, user }) => {
   const [showAll, setShow] = useState(false);
 
   const handleClick = () => {
@@ -12,7 +12,6 @@ const Blog = ({ blog, setBlogs }) => {
 
   const handleLike = async () => {
     const newBlog = { ...blog, likes: blog.likes + 1 };
-    console.log(newBlog);
     await blogService.modify(newBlog);
     setBlogs(await blogService.getAll());
   };
@@ -23,6 +22,15 @@ const Blog = ({ blog, setBlogs }) => {
     border: "solid",
     borderWidth: 1,
     marginBottom: 5,
+  };
+
+  const showDeleteButton = user.id === blog.user.id;
+
+  const handelDelete = async () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      await blogService.deleteBlog(blog);
+      setBlogs(await blogService.getAll());
+    }
   };
 
   if (showAll) {
@@ -38,7 +46,8 @@ const Blog = ({ blog, setBlogs }) => {
           Likes: {blog.likes} <button onClick={handleLike}>Like</button>
         </p>
         <p>{blog.user.name}</p>
-        <button onClick={handleClick}>Hide</button>
+        <button onClick={handleClick}>Hide</button>{" "}
+        {showDeleteButton && <button onClick={handelDelete}>Delete</button>}
       </div>
     );
   } else {
@@ -53,6 +62,7 @@ const Blog = ({ blog, setBlogs }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
   setBlogs: PropTypes.func.isRequired,
 };
 
