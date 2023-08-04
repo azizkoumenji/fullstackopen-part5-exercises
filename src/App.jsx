@@ -61,7 +61,9 @@ const App = () => {
     blogFormRef.current.toggleVisibility();
     await blogService.create(blogObject);
     setBlogs(await blogService.getAll());
-    setMessage(`A new blog "${blogObject.title}" by ${blogObject.author} has been added`);
+    setMessage(
+      `A new blog "${blogObject.title}" by ${blogObject.author} has been added`
+    );
     setTimeout(() => {
       setMessage(null);
     }, 5000);
@@ -70,6 +72,12 @@ const App = () => {
   function compareNumbers(a, b) {
     return b.likes - a.likes;
   }
+
+  const handleLike = async (blog) => {
+    const newBlog = { ...blog, likes: blog.likes + 1 };
+    await blogService.modify(newBlog);
+    setBlogs(await blogService.getAll());
+  };
 
   if (user === null) {
     return (
@@ -92,13 +100,16 @@ const App = () => {
         <p>{user.name} is logged in.</p>
         <button onClick={handleLogout}>Log Out</button>
         <Togglable buttonLabel="New Blog" ref={blogFormRef}>
-          <Add
-            addBlog={addBlog}
-          />
+          <Add addBlog={addBlog} />
         </Togglable>
-        {
-          blogs.sort(compareNumbers).map((blog) => (
-          <Blog key={blog.id} blog={blog} user={user} setBlogs={setBlogs}/>
+        {blogs.sort(compareNumbers).map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            user={user}
+            handleLike={handleLike}
+            setBlogs={setBlogs}
+          />
         ))}
       </div>
     );

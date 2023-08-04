@@ -2,18 +2,12 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import blogService from "../services/blogs";
 
-const Blog = ({ blog, setBlogs, user }) => {
+const Blog = ({ blog, setBlogs, user, handleLike }) => {
   const [showAll, setShow] = useState(false);
 
   const handleClick = () => {
     const change = !showAll;
     setShow(change);
-  };
-
-  const handleLike = async () => {
-    const newBlog = { ...blog, likes: blog.likes + 1 };
-    await blogService.modify(newBlog);
-    setBlogs(await blogService.getAll());
   };
 
   const blogStyle = {
@@ -43,7 +37,8 @@ const Blog = ({ blog, setBlogs, user }) => {
           {blog.url}
         </a>
         <p>
-          Likes: {blog.likes} <button onClick={handleLike}>Like</button>
+          Likes: {blog.likes}{" "}
+          <button onClick={() => handleLike(blog)}>Like</button>
         </p>
         <p>{blog.user.name}</p>
         <button onClick={handleClick}>Hide</button>{" "}
