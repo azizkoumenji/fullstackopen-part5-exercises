@@ -51,5 +51,16 @@ describe("Blog app", () => {
       cy.contains("Save").click();
       cy.contains("A blog created by cypress");
     });
+
+    it("user can like a blog", function () {
+      cy.createBlog({
+        title: "Blog",
+        author: "Author",
+        url: "https://blogs.com/author",
+      });
+      cy.contains("View").click();
+      cy.contains("Like").click();
+      cy.contains("1");
+    });
   });
 });
