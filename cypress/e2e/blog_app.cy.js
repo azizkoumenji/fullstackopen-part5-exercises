@@ -6,7 +6,16 @@ describe("Blog app", () => {
       username: "test",
       password: "1234",
     };
+
     cy.request("POST", `${Cypress.env("BACKEND")}/users`, user);
+
+    const userSecond = {
+      name: "Test Second",
+      username: "testsecond",
+      password: "1234",
+    };
+    cy.request("POST", `${Cypress.env("BACKEND")}/users`, userSecond);
+
     cy.visit("");
   });
 
@@ -73,5 +82,17 @@ describe("Blog app", () => {
       cy.contains("Delete").click();
       cy.get("html").should("not.contain", "Blog Author");
     });
+  });
+
+  it("only the creator can see the delete button of a blog", function () {
+    cy.login({ username: "test", password: "1234" });
+    cy.createBlog({
+      title: "Blog",
+      author: "Author",
+      url: "https://blogs.com/author",
+    });
+    cy.login({ username: "testsecond", password: "1234" });
+    cy.contains("View").click();
+    cy.get("html").should("not.contain", "Delete");
   });
 });
