@@ -95,4 +95,31 @@ describe("Blog app", () => {
     cy.contains("View").click();
     cy.get("html").should("not.contain", "Delete");
   });
+
+  it(" the blogs are ordered according to likes", function () {
+    cy.login({ username: "test", password: "1234" });
+    cy.createBlog({
+      title: "Blog One",
+      author: "Author One",
+      url: "https://blogs.com/authorone",
+      likes: 5,
+    });
+    cy.createBlog({
+      title: "Blog Two",
+      author: "Author Two",
+      url: "https://blogs.com/authortwo",
+      likes: 11,
+    });
+
+    cy.createBlog({
+      title: "Blog Three",
+      author: "Author Three",
+      url: "https://blogs.com/authorthree",
+      likes: 7,
+    });
+
+    cy.get(".blog").eq(0).should("contain", "Blog Two Author Two");
+    cy.get(".blog").eq(1).should("contain", "Blog Three Author Three");
+    cy.get(".blog").eq(2).should("contain", "Blog One Author One");
+  });
 });

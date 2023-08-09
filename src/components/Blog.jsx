@@ -29,7 +29,7 @@ const Blog = ({ blog, setBlogs, user, handleLike }) => {
 
   if (showAll) {
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} className="blog">
         <p>
           {blog.title} {blog.author}
         </p>
@@ -47,7 +47,7 @@ const Blog = ({ blog, setBlogs, user, handleLike }) => {
     );
   } else {
     return (
-      <div>
+      <div className="blog">
         {blog.title} {blog.author}
         <button onClick={handleClick}>View</button>
       </div>
@@ -59,6 +59,7 @@ Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   setBlogs: PropTypes.func.isRequired,
+  handleLike: PropTypes.func.isRequired,
 };
 
 export default Blog;
